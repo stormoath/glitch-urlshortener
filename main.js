@@ -5,21 +5,15 @@ const url = require('url')
 const express = require('express')
 const app = express()
 
-
-app.use( (req,res,next) => {
-	let err = false
-	if(!req.method === 'GET'){
-		res.writeHead(400)
-		err = true
-	}
-	let query = url.parse(req.url).query.split('=')
-	let endpoint = url.parse(req.url).pathname
+app.get('/:query', (req,res,next) => {
+	let endpoint = req.params.query
 	let response = {}
-	let date = new Date(query[1])
-	if (endpoint.indexOf('unixtime') > 0){
-		response['unixtime'] = date.getTime()
+	if (parseInt(endpoint) === NaN){
+		let date = new Date(endpoint)
+    response['natual'] = endpoint
+    response['unix'] = date
 	}
-	else if (endpoint.indexOf('parsetime') > 0){
+	else if (parseInt(endpoint)){
 		response['hour'] = date.getHours()
 		response['minute'] = date.getMinutes()
 		response['second'] = date.getSeconds()
