@@ -1,8 +1,12 @@
-var http = require('http')
-var url = require('url')
-const server = require('./server.js')
+'use strict'
 
-var serv = http.createServer( (req,res) => {
+const server = require('./server.js')
+const url = require('url')
+const express = require('express')
+const app = express()
+
+
+app.use( (req,res,next) => {
 	let err = false
 	if(!req.method === 'GET'){
 		res.writeHead(400)
@@ -31,4 +35,3 @@ var serv = http.createServer( (req,res) => {
 		res.end("Server only accepts GET and endpoints parsetime or unixtime")
 	}
 })
-server.listen(process.argv[2])
