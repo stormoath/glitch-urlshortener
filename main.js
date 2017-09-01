@@ -4,8 +4,9 @@ const url = require('url')
 const express = require('express')
 const app = express()
 
-app.get('/:query', (req,res,next) => {
-	let endpoint = req.params.query
+app.route('/:query').get((req,res,next) => {
+	console.log('HI!')
+  let endpoint = req.params.query
   console.log(endpoint)
 	let response = {
       'natural': null,
@@ -20,6 +21,5 @@ app.get('/:query', (req,res,next) => {
 	}
 	res.end(JSON.stringify(response))
 })
-
 
 const server = require('./server.js')
