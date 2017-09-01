@@ -9,13 +9,13 @@ app.get('/:query', (req,res,next) => {
 	let endpoint = req.params.query
 	let response = {}
 	if (parseInt(endpoint) === NaN){
-		let date = new Date(endpoint)
+		let date = Date.parse(endpoint)
     response['natual'] = endpoint
-    response['unix'] = date
+    response['unix'] = date.getTime()
 	}
-	else if (parseInt(endpoint)){
-		response['hour'] = date.getHours()
-		response['minute'] = date.getMinutes()
+	else if (parseInt(endpoint) > 2678400000 && parseInt(endpoint) != Infinity){
+		response['natural'] = date.getHours()
+		response['unix'] = endpoint
 		response['second'] = date.getSeconds()
 	}
 	else{
