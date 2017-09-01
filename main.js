@@ -1,30 +1,25 @@
 'use strict'
 
-const server = require('./server.js')
 const url = require('url')
 const express = require('express')
 const app = express()
 
 app.get('/:query', (req,res,next) => {
 	let endpoint = req.params.query
-	let response = {}
-  res.writeHead(200, { 'Content-Type': 'application/json' })
-	if (parseInt(endpoint) === NaN){
-		let date = new Date(endpoint)
-    response['natual'] = endpoint
-    response['unix'] = date.getTime()
-	}
-	else if (parseInt(endpoint) > 2678400000 && parseInt(endpoint) != Infinity){
-		let months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-    let date = new Date(endpoint)
-    response['natural'] = months[date.getMonth()] + " " + date.getDay() + ", " + date.getFullYear()
-		response['unix'] = endpoint
-	}
-	else{
-		response = {
+  console.log(endpoint)
+	let response = {
       'natural': null,
       'unix': null
     }
+  res.writeHead(200, { 'Content-Type': 'application/json' })
+  let date = new Date(endpoint)
+  if (date != 'Invalid Date' ){
+    let months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+    response['natural'] = months[date.getMonth()] + " " + date.getDay() + ", " + date.getFullYear()
+		response['unix'] = date.getTime()
 	}
 	res.end(JSON.stringify(response))
 })
+
+
+const server = require('./server.js')
