@@ -38,9 +38,13 @@ app.route('/')
 		  res.sendFile(process.cwd() + '/views/index.html');
     })
 
+app.route('/favicon.ico').get((req,res,next) => {
+  res.status(404);
+  res.type('txt').send('Not found');
+});
+
 app.route('/:query').get((req,res,next) => {
-	console.log('HI!')
-  let endpoint = req.params.query
+  let endpoint = (parseInt(req.params.query) === NaN) ? req.params.query : parseInt(req.params.query)
   console.log(endpoint)
 	let response = {
       'natural': null,
@@ -48,6 +52,7 @@ app.route('/:query').get((req,res,next) => {
     }
   res.writeHead(200, { 'Content-Type': 'application/json' })
   let date = new Date(endpoint)
+  console.log(new Date(endpoint))
   if (date != 'Invalid Date' ){
     let months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
     response['natural'] = months[date.getMonth()] + " " + date.getDay() + ", " + date.getFullYear()
