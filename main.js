@@ -8,24 +8,23 @@ const app = express()
 app.get('/:query', (req,res,next) => {
 	let endpoint = req.params.query
 	let response = {}
+  res.writeHead(200, { 'Content-Type': 'application/json' })
 	if (parseInt(endpoint) === NaN){
-		let date = Date.parse(endpoint)
+		let date = new Date(endpoint)
     response['natual'] = endpoint
     response['unix'] = date.getTime()
 	}
 	else if (parseInt(endpoint) > 2678400000 && parseInt(endpoint) != Infinity){
-		response['natural'] = date.getHours()
+		let months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+    let date = new Date(endpoint)
+    response['natural'] = months[date.getMonth()] + " " + date.getDay() + ", " + date.getFullYear()
 		response['unix'] = endpoint
-		response['second'] = date.getSeconds()
 	}
 	else{
-		res.writeHead(404)
+		response = {
+      'natural': null,
+      'unix': null
+    }
 	}
-	if(!err){
-		res.writeHead(200, { 'Content-Type': 'application/json' })
-		res.end(JSON.stringify(response))
-	}
-	else{
-		res.end("Server only accepts GET and endpoints parsetime or unixtime")
-	}
+	res.end(JSON.stringify(response))
 })
