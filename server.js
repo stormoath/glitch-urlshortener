@@ -2,6 +2,7 @@
 
 var fs = require('fs');
 var mongodb = require('mongodb');
+var dbclient = mongodb.MongoClient;
 var express = require('express');
 var app = express();
 
@@ -40,7 +41,6 @@ app.route('/favicon.ico').get((req,res,next) => {
 
 app.get('/new/:query', (req,res,next) => {
   let urlMatcher = /(http|https):\/\/.*\.com\//gi
-  
   
   if (req.params.query.match(urlMatcher)){
     res.writeHead(200, { 'Content-Type': 'text' })
