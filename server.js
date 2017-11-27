@@ -54,13 +54,15 @@ app.get('/new/http*', (req,res,next) => {
         db.collection('urllist').count((err,count)=>{
           if(err === null){
             let urlId = ++count;
-            db.collection('urllist').insertOne({
+            let newEntry = {
               "urlId": urlId,
-              "url": url
-            }, (err,result) => {
+              "url": url,
+              "newUrl": "https://abiding-sauce.glitch.me/" + urlId
+            }
+            db.collection('urllist').insertOne(newEntry, (err,result) => {
               if(err === null){
-                res.writeHead(200, { 'Content-Type': 'text' })
-                res.end("Your URL " + url + " was successfully shortened to https://abiding-sauce.glitch.me/" + urlId);
+                res.writeHead(200, { 'Content-Type': 'application/json' })
+                res.end(JSON.stringify(newEntry));
                 db.close();
               }
               else{
@@ -76,8 +78,8 @@ app.get('/new/http*', (req,res,next) => {
     })
   }
   else{
-    res.writeHead(400, { 'Content-Type': 'text' })
-    res.end("Your URL " + url + " is not in a valid format for using this service");
+    res.writeHead(400, { 'Content-Type': 'application/json' })
+    res.end(JSON.stringify({error:"Your URL " + url + " is not in a valid format for using this service"}));
   }
 })
 
