@@ -6,6 +6,7 @@ const app = express()
 
 app.route('/:query').get((req,res,next) => {
 	let UA = req.get('user-agent')
+  let OS = /\((?:compatible;[^;]+; |Linux; )?(?<os>[a-zA-Z]+(?: NT)?) ?(?<os_ver>[\d\.]+)/gi
   let response = {
     "ipaddress":"213.233.148.28",
     "language":"en-IE",
