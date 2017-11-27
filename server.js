@@ -1,6 +1,7 @@
 'use strict';
 
 var fs = require('fs');
+var mongodb = require('mongodb');
 var express = require('express');
 var app = express();
 
@@ -37,18 +38,18 @@ app.route('/favicon.ico').get((req,res,next) => {
   res.type('txt').send('Not found');
 });
 
-app.get('/api/whoami', (req,res,next) => {
-  console.log("Routing /whoami...")
-  let OS = req.get('user-agent').replace(/^[^(]*\(/, "").replace(/\)[^(]*$/, "").split(/\)[^(]*\(/)[0]; 
-  let lang = req.get('accept-language').split(",")[0];
-  let IP = req.ip;
-  let response = {
-    "ipaddress": req.ip,
-    "language": lang,
-    "software": OS
+app.get('/new/:query', (req,res,next) => {
+  let urlMatcher = /(http|https):\/\/.*\.com\//gi
+  
+  
+  if (req.params.query.match(urlMatcher)){
+    res.writeHead(200, { 'Content-Type': 'text' })
+    res.end("Your URL " + query + " was successfully shortened to " + urlId);
   }
-  res.writeHead(200, { 'Content-Type': 'application/json' })
-  res.end(JSON.stringify(response))
+  else{
+    res.writeHead(400, { 'Content-Type': 'text' })
+    res.end("Your URL " + query + " is not in a valid format for using this service");
+  }
 })
 
 // Respond not found to all the wrong routes
