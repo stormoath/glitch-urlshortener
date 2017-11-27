@@ -5,8 +5,9 @@ const express = require('express')
 const app = express()
 
 app.route('/:query').get((req,res,next) => {
-	let UA = req.get('user-agent')
-  let OS = /\((?:compatible;[^;]+; |Linux; )?(?<os>[a-zA-Z]+(?: NT)?) ?(?<os_ver>[\d\.]+)/gi
+  let OS = req.get('user-agent').replace(/^[^(]*\(/, "").replace(/\)[^(]*$/, "").split(/\)[^(]*\(/)[0]; 
+  let lang = req.get('accept-language').split(",")[0];
+  let IP = 
   let response = {
     "ipaddress":"213.233.148.28",
     "language":"en-IE",
