@@ -41,9 +41,9 @@ app.route('/favicon.ico').get((req,res,next) => {
 
 app.get('/new/http*', (req,res,next) => {
   let urlMatcher = /(http|https):\/\/.*\.com\//gi
-  let url = req.path.substring
+  let url = req.path.substring(5)
   if (url.match(urlMatcher)){
-      const dburl = process.env.mongodburi
+      const dburl = process.env.MONGODBURI
       dbclient.connect(dburl, function (err, db) {
       if (err) {
         console.log('Unable to connect to the mongoDB server. Error:', err);
@@ -55,11 +55,13 @@ app.get('/new/http*', (req,res,next) => {
           if(err === null){
             let urlId = ++count;
             db.collection('urllist').insertOne({
-              url: urlId
+              "urlId" urlId,
+              "url": url
             }, (err,result) => {
               if(err === null){
                 res.writeHead(200, { 'Content-Type': 'text' })
-                res.end("Your URL " + url + " was successfully shortened to " + urlId);
+                res.end("Your URL " + url + " was successfully shortened to https://abiding-sauce.glitch.me/" + urlId);
+                db.close();
               }
               else{
                 dbError(err)
@@ -73,8 +75,52 @@ app.get('/new/http*', (req,res,next) => {
         function dbError(err){
           res.writeHead(500, { 'Content-Type': 'text' })
           res.end("Database error: " + err);
+          db.close();
         }
-        db.close();
+      }
+    })
+  }
+  else{
+    res.writeHead(400, { 'Content-Type': 'text' })
+    res.end("Your URL " + url + " is not in a valid format for using this service");
+  }
+})
+
+app.get(/\d/, (req,res,next) => {
+  let entry = req.path
+  const dburl = process.env.MONGODBURI
+  dbclient.connect(dburl, function (err, db) {
+  if (err) {
+    console.log('Unable to connect to the mongoDB server. Error:', err);
+  } 
+  else {
+    console.log('Connection established to', dburl);
+
+    db.collection('urllist').find((err,count)=>{
+          if(err === null){
+            
+            db.collection('urllist').insertOne({
+              url: urlId
+            }, (err,result) => {
+              if(err === null){
+                res.writeHead(200, { 'Content-Type': 'text' })
+                res.end("Your URL " + url + " was successfully shortened to https://abiding-sauce.glitch.me/" + urlId);
+                db.close();
+              }
+              else{
+                dbError(err)
+              }
+            })
+          }
+          else{
+            dbError(err)
+          }
+        })
+        function dbError(err){
+          res.writeHead(500, { 'Content-Type': 'text' })
+          res.end("Database error: " + err);
+          db.close();
+        }
       }
     })
   }
