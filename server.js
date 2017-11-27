@@ -33,10 +33,9 @@ app.route('/_api/package.json')
     });
   });
   
-app.route('/')
-    .get(function(req, res) {
+app.route('/').get(function(req, res) {
 		  res.sendFile(process.cwd() + '/views/index.html');
-    })
+})
 
 app.route('/favicon.ico').get((req,res,next) => {
   res.status(404);

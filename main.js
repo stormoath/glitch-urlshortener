@@ -6,6 +6,10 @@ const app = express()
 
 console.log("hi!")
 
+app.route('/test').get(function(req, res) {
+		  res.status(200).type('txt').send('Test success!')
+})
+
 app.route('/api/whoami').get((req,res,next) => {
   console.log("Routing /whoami...")
   let OS = req.get('user-agent').replace(/^[^(]*\(/, "").replace(/\)[^(]*$/, "").split(/\)[^(]*\(/)[0]; 
