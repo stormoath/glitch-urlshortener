@@ -55,7 +55,7 @@ app.get('/new/http*', (req,res,next) => {
           if(err === null){
             let urlId = ++count;
             db.collection('urllist').insertOne({
-              "urlId" urlId,
+              "urlId": urlId,
               "url": url
             }, (err,result) => {
               if(err === null){
@@ -87,48 +87,29 @@ app.get('/new/http*', (req,res,next) => {
 })
 
 app.get(/\d/, (req,res,next) => {
-  let entry = req.path
+  let entry = req.path.substring(1)
+  console.log(entry)
   const dburl = process.env.MONGODBURI
   dbclient.connect(dburl, function (err, db) {
-  if (err) {
-    console.log('Unable to connect to the mongoDB server. Error:', err);
-  } 
-  else {
-    console.log('Connection established to', dburl);
+    if (err) {
+      console.log('Unable to connect to the mongoDB server. Error:', err);
+    } 
+    else {
+      console.log('Connection established to', dburl);
 
-    db.collection('urllist').find((err,count)=>{
-          if(err === null){
-            
-            db.collection('urllist').insertOne({
-              url: urlId
-            }, (err,result) => {
-              if(err === null){
-                res.writeHead(200, { 'Content-Type': 'text' })
-                res.end("Your URL " + url + " was successfully shortened to https://abiding-sauce.glitch.me/" + urlId);
-                db.close();
-              }
-              else{
-                dbError(err)
-              }
-            })
-          }
-          else{
-            dbError(err)
-          }
-        })
-        function dbError(err){
-          res.writeHead(500, { 'Content-Type': 'text' })
-          res.end("Database error: " + err);
-          db.close();
+      let cursor = db.collection('urllist').find({"urlId": entry})
+      cursor.each((err,doc)=>{
+        if(err === null){
+          console.dir(doc)            
         }
-      }
-    })
-  }
-  else{
-    res.writeHead(400, { 'Content-Type': 'text' })
-    res.end("Your URL " + url + " is not in a valid format for using this service");
-  }
+        else{
+          dbError(err)
+        }
+      })
+    }
+  })
 })
+
 
 // Respond not found to all the wrong routes
 app.use(function(req, res, next){
@@ -149,3 +130,9 @@ app.listen(process.env.PORT, function () {
   console.log('Node.js listening ...');
 });
 
+
+function dbError(err){
+  res.writeHead(500, { 'Content-Type': 'text' })
+  res.end("Database error: " + err);
+  db.close();
+}
