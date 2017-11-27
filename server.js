@@ -41,10 +41,34 @@ app.route('/favicon.ico').get((req,res,next) => {
 
 app.get('/new/:query', (req,res,next) => {
   let urlMatcher = /(http|https):\/\/.*\.com\//gi
-  
-  if (req.params.query.match(urlMatcher)){
-    res.writeHead(200, { 'Content-Type': 'text' })
-    res.end("Your URL " + query + " was successfully shortened to " + urlId);
+  let url = req.params.query
+  if (url.match(urlMatcher)){
+      const dburl = process.env.mongodburi
+      dbclient.connect(dburl, function (err, db) {
+      if (err) {
+        console.log('Unable to connect to the mongoDB server. Error:', err);
+      } 
+      else {
+        console.log('Connection established to', dburl);
+
+        db.collection('urllist').insertOne({
+          url: urlId;
+        }, (err,result) => {
+          if(err === null){
+            res.writeHead(200, { 'Content-Type': 'text' })
+            res.end("Your URL " + query + " was successfully shortened to " + urlId);
+          }
+          else{
+            res.writeHead(500, { 'Content-Type': 'text' })
+            res.end("Database error: " + 500);
+          }
+          }
+        })
+        
+
+        db.close();
+      }
+    })
   }
   else{
     res.writeHead(400, { 'Content-Type': 'text' })
