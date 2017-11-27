@@ -4,14 +4,17 @@ const url = require('url')
 const express = require('express')
 const app = express()
 
-app.route('/:query').get((req,res,next) => {
+console.log("hi!")
+
+app.route('/api/whoami').get((req,res,next) => {
+  console.log("Routing /whoami...")
   let OS = req.get('user-agent').replace(/^[^(]*\(/, "").replace(/\)[^(]*$/, "").split(/\)[^(]*\(/)[0]; 
   let lang = req.get('accept-language').split(",")[0];
-  let IP = 
+  let IP = req.ip;
   let response = {
-    "ipaddress":"213.233.148.28",
-    "language":"en-IE",
-    "software":"X11; Linux x86_64"
+    "ipaddress": req.ip,
+    "language": lang,
+    "software": OS
   }
   res.writeHead(200, { 'Content-Type': 'application/json' })
   res.end(JSON.stringify(response))

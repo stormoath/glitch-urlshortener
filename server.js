@@ -43,27 +43,10 @@ app.route('/favicon.ico').get((req,res,next) => {
   res.type('txt').send('Not found');
 });
 
-app.route('/:query').get((req,res,next) => {
-  let endpoint = (isNaN(parseInt(req.params.query))) ? req.params.query : parseInt(req.params.query)
-	let response = {
-      'natural': null,
-      'unix': null
-    }
-  res.writeHead(200, { 'Content-Type': 'application/json' })
-  let date = new Date(endpoint)
-  if (date != 'Invalid Date' ){
-    let months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-    response['natural'] = months[date.getMonth()] + " " + date.getDate() + ", " + date.getFullYear()
-		response['unix'] = date.getTime()
-	}
-	res.end(JSON.stringify(response))
-})
-
-
 // Respond not found to all the wrong routes
 app.use(function(req, res, next){
   res.status(404);
-  res.type('txt').send('Not found');
+  res.type('txt').send('Not found! Request was ' + req.path);
 });
 
 // Error Middleware
