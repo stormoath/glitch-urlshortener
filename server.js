@@ -39,9 +39,9 @@ app.route('/favicon.ico').get((req,res,next) => {
   res.type('txt').send('Not found');
 });
 
-app.get('/new/:query', (req,res,next) => {
+app.get('/new/http*', (req,res,next) => {
   let urlMatcher = /(http|https):\/\/.*\.com\//gi
-  let url = req.params.query
+  let url = req.path.substring
   if (url.match(urlMatcher)){
       const dburl = process.env.mongodburi
       dbclient.connect(dburl, function (err, db) {
@@ -53,7 +53,7 @@ app.get('/new/:query', (req,res,next) => {
 
         db.collection('urllist').count((err,count)=>{
           if(err === null){
-            urlId = ++count++;
+            let urlId = ++count;
             db.collection('urllist').insertOne({
               url: urlId
             }, (err,result) => {
@@ -62,18 +62,25 @@ app.get('/new/:query', (req,res,next) => {
                 res.end("Your URL " + url + " was successfully shortened to " + urlId);
               }
               else{
-                res.writeHead(500, { 'Content-Type': 'text' })
-                res.end("Database error: " + err);
+                dbError(err)
               }
-          })
+            })
+          }
+          else{
+            dbError(err)
+          }
         })
+        function dbError(err){
+          res.writeHead(500, { 'Content-Type': 'text' })
+          res.end("Database error: " + err);
+        }
         db.close();
       }
     })
   }
   else{
     res.writeHead(400, { 'Content-Type': 'text' })
-    res.end("Your URL " + query + " is not in a valid format for using this service");
+    res.end("Your URL " + url + " is not in a valid format for using this service");
   }
 })
 
