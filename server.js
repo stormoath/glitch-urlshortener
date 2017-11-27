@@ -64,19 +64,14 @@ app.get('/new/http*', (req,res,next) => {
                 db.close();
               }
               else{
-                dbError(err)
+                dbError(err,res,db)
               }
             })
           }
           else{
-            dbError(err)
+            dbError(err,res,db)
           }
         })
-        function dbError(err){
-          res.writeHead(500, { 'Content-Type': 'text' })
-          res.end("Database error: " + err);
-          db.close();
-        }
       }
     })
   }
@@ -99,15 +94,15 @@ app.get(/\d/, (req,res,next) => {
 
       let cursor = db.collection('urllist').find({"urlId": entry})
       cursor.each((err,doc)=>{
-        if(err =      i && doc !== nullf(err === null && doc.url !== null){
-          res.redir
+        if(err === null && doc !== null){
+          res.redirect(doc.url)            
+        }
         else if(doc === null){
           res.writeHead(404, { 'Content-Type': 'text' })
           res.end("Your shortened URL https://abiding-sauce.glitch.me/" + entry + " was not found in the database");
-        }ect(doc.url)            
         }
         else{
-          dbError(err)
+          dbError(err, res, db)
         }
       })
     }
@@ -135,7 +130,7 @@ app.listen(process.env.PORT, function () {
 });
 
 
-function dbError(err){
+function dbError(err, res, db){
   res.writeHead(500, { 'Content-Type': 'text' })
   res.end("Database error: " + err);
   db.close();
