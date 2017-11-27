@@ -51,21 +51,22 @@ app.get('/new/:query', (req,res,next) => {
       else {
         console.log('Connection established to', dburl);
 
-        db.collection('urllist').insertOne({
-          url: urlId;
-        }, (err,result) => {
+        db.collection('urllist').count((err,count)=>{
           if(err === null){
-            res.writeHead(200, { 'Content-Type': 'text' })
-            res.end("Your URL " + query + " was successfully shortened to " + urlId);
-          }
-          else{
-            res.writeHead(500, { 'Content-Type': 'text' })
-            res.end("Database error: " + 500);
-          }
-          }
+            urlId = ++count++;
+            db.collection('urllist').insertOne({
+              url: urlId
+            }, (err,result) => {
+              if(err === null){
+                res.writeHead(200, { 'Content-Type': 'text' })
+                res.end("Your URL " + url + " was successfully shortened to " + urlId);
+              }
+              else{
+                res.writeHead(500, { 'Content-Type': 'text' })
+                res.end("Database error: " + err);
+              }
+          })
         })
-        
-
         db.close();
       }
     })
