@@ -40,7 +40,7 @@ app.route('/favicon.ico').get((req,res,next) => {
 });
 
 app.get('/new/http*', (req,res,next) => {
-  let urlMatcher = /(http|https):\/\/.*\.com\//gi
+  let urlMatcher = /(http|https):\/\/.*\.(com|net|org)\//gi
   let url = req.path.substring(5)
   if (url.match(urlMatcher)){
       const dburl = process.env.MONGODBURI
@@ -87,7 +87,7 @@ app.get('/new/http*', (req,res,next) => {
 })
 
 app.get(/\d/, (req,res,next) => {
-  let entry = req.path.substring(1)
+  let entry = Number(req.path.substring(1))
   console.log(entry)
   const dburl = process.env.MONGODBURI
   dbclient.connect(dburl, function (err, db) {
@@ -99,8 +99,12 @@ app.get(/\d/, (req,res,next) => {
 
       let cursor = db.collection('urllist').find({"urlId": entry})
       cursor.each((err,doc)=>{
-        if(err === null){
-          console.dir(doc)            
+        if(err =      i && doc !== nullf(err === null && doc.url !== null){
+          res.redir
+        else if(doc === null){
+          res.writeHead(404, { 'Content-Type': 'text' })
+          res.end("Your shortened URL https://abiding-sauce.glitch.me/" + entry + " was not found in the database");
+        }ect(doc.url)            
         }
         else{
           dbError(err)
