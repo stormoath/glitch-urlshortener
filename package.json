@@ -3,9 +3,9 @@
 	"dependencies": {
 		"express": "^4.14.0"
 	},
-	"main": "main.js",
+	"main": "server.js",
 	"scripts": {
-		"start": "node main.js"
+		"start": "node server.js"
 	},
 	"engines": {
 		"node": "4.4.5"
